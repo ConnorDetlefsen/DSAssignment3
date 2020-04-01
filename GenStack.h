@@ -1,6 +1,8 @@
 #include <iostream>
 #include <stack>
 #include <exception>
+#include <fstream> //file streams
+
 
 using namespace std;
 
@@ -19,7 +21,12 @@ class GenStack{
     bool isFull(); //returns if full
     int maxSize(); //returns max size of stack
 
-    void expand();
+    void expand(); //expands stack if it gets full
+    void delimFill(string fileName); //fills stack with delimiters
+    void delimCheck(char c, int lineCount);
+    void runThrough(char c, int lineCount);
+    void error(char c);
+
 
     int mSize;
     int top;
@@ -101,4 +108,162 @@ void GenStack<X>::expand(){ //expands stack by 10 slots, uses temporary array
 template <class X>
 int GenStack<X>::maxSize(){
   return mSize;
+}
+
+template <class X>
+void GenStack<X>::delimFill(string fileName){
+  int count = 0;
+  int firstQuote = 0;
+  int endQuote = 0;
+
+  ifstream fin; //creation of ifstream class object
+  string line = "";
+  int lineCount = 0;
+
+  fin.open(fileName);
+    while (fin) {     //reads in input from text file given from user
+      getline(fin, line);
+      ++lineCount;
+      for(int i = 0; i < line.length(); ++i){   //finds count of each letter
+        if(line[i] == '/' && line[i+1] == '/')
+          break;
+        if(line[i] == '\'' || line[i] == '\"'){
+          firstQuote = i;
+          for(int i = 0; i < line.length(); ++i){
+            if(line[i] == '\'' || line[i] == '\"'){
+              endQuote = i;
+          }
+        }
+      }
+        if(i <= endQuote && i >= firstQuote)
+          continue;
+        else{
+          if(isFull() == true){   //check if full before attempting to push /insert
+            expand(); //expands stack by 10
+          }
+          char c = line[i];
+          if(c == '('){
+            //myArray[++top] = c;
+            delimCheck(c, lineCount);
+          }
+          else if(c == ')'){
+            delimCheck(c, lineCount);
+          }
+          else if(c == '['){
+            delimCheck(c, lineCount);
+          }
+          else if(c == ']'){
+            delimCheck(c, lineCount);
+          }
+          else if(c == '{'){
+            delimCheck(c, lineCount);
+          }
+          else if(c == '}'){
+            delimCheck(c, lineCount);
+          }
+        }
+      }
+    }
+    fin.close();
+}
+
+template <class X>
+void GenStack<X>::delimCheck(char c, int lineCount){  //sorts through stack, if pair pops it
+  while (true){
+    char previous = myArray[top];
+    if (isEmpty() == true){
+      runThrough(c, lineCount);
+      myArray[++top] = c;
+    //  cout << "test" << endl;
+      break;
+    }
+    if(c == ')'){
+      if(previous == '('){
+        pop();
+      //  cout << "(test)" << endl;
+        break;
+      }
+      else{
+        runThrough(c, lineCount);
+        break;
+      }
+    }
+    if(c == ']'){
+      if(previous == '['){
+        pop();
+      //  cout << "[test]" << endl;
+        break;
+      }
+      else{
+        runThrough(c, lineCount);
+        break;
+      }
+    }
+    if(c == '}'){
+      if(previous == '{'){
+        pop();
+      //  cout << "{test}" << endl;
+        break;
+      }
+      else{
+        runThrough(c, lineCount);
+        break;
+      }
+    }
+    myArray[++top] = c;
+    break;
+  }
+}
+
+template <class X>
+void GenStack<X>::runThrough(char c, int lineCount){
+  //int count = 0;
+  for(int i = 0; i < size(); ++i){
+    bool check = false;
+      if(c == ')'){
+        for(int i = 0; i < size(); ++i){
+          if(myArray[i] == '('){
+            check = true;
+            break;
+          }
+        }
+        if(check!=true){
+          cout << "error no match found for ) on line" << lineCount << endl;
+          error(c);
+          break;
+        }
+      }
+      if(c == ']'){
+        for(int i = 0; i < size(); ++i){
+          if(myArray[i] == '['){
+            check = true;
+            break;
+          }
+        }
+        if(check!=true){
+          cout << "error no match found for ] on line" << lineCount << endl;
+          error(c);
+          break;
+        }
+      }
+      if(c == '}'){
+        for(int i = 0; i < size(); ++i){
+          if(myArray[i] == '{'){
+            check = true;
+            break;
+          }
+        }
+        if(check!=true){
+          cout << "error no match found for } on line" << lineCount << endl;
+          error(c);
+          break;
+        }
+      }
+  }
+}
+
+template <class X>
+void GenStack<X>::error(char c){
+  cout << "no match found for " << c << endl;
+  exit(0);
 }

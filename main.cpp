@@ -6,19 +6,30 @@ using namespace std;
 
 int main(int argc, char **argv){
 
-  GenStack<char> myStack(3);
-  GenStack<int> myIntStack(5);
+  FileReader counter;
 
-  /*myStack.push('c');
-  myStack.push('o');
-  myStack.push('n');
-  cout << myStack.maxSize() << endl; */
 
-  FileReader test;
-//  cout << test.delimCount("test.txt") << endl;
 
-  GenStack<char> testStack(test.delimCount("test.txt")); //creates stack to size of count of delims
-  cout << testStack.maxSize() << endl;
+
+
+
+
+
+  GenStack<char> myStack(counter.delimCount("GenStack.h"));
+
+  myStack.delimFill("GenStack.h");
+
+  if(myStack.isEmpty()){
+    cout << "syntax is good" << endl;
+  }
+  cout << myStack.size() << endl;
+
+  for(int i = 0; i < 100; ++i){
+    cout << myStack.pop() << endl;
+  }
+
+   cout << myStack.size() << endl;
+
 
 
 
