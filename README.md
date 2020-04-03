@@ -11,3 +11,6 @@ https://www.geeksforgeeks.org/command-line-arguments-in-c-cpp/
 
 http://www.cplusplus.com/doc/tutorial/exceptions/
 //learn about exceptions for pop()
+
+https://www.geeksforgeeks.org/exit-vs-_exit-c-cpp/
+//learn about exit(0)
