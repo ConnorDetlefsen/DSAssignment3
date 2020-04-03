@@ -1,9 +1,7 @@
 #include <iostream>
 #include <fstream> //file streams
 
-
 using namespace std;
-
 
 class FileReader{
   public:
@@ -14,8 +12,6 @@ class FileReader{
     GenStack<char> delimStack;
 
 };
-
-
 
 int FileReader::delimCount(string fileName){  //counts delims in file, used to make first stack
   int curved = 0;
